@@ -1,9 +1,7 @@
 <template>
-    <v-stage :config="configKonva">
-      <v-layer :config="layerConfig">
+      <!-- <v-layer :config="layerConfig"> -->
         <v-text :config="textConfig"/>
-      </v-layer>
-    </v-stage>  
+      <!-- </v-layer> -->
 </template>
 
 <script lang="ts">
@@ -13,52 +11,38 @@ var layerWidth = 600;
 var layerHeight = 600;
 
 export default {
-  data() {
-    return {
-      configKonva: {
-        width: window.innerWidth,
-        height: window.innerHeight
-      },
-      layerConfig: {
-        x: (window.innerWidth / 2) - (layerWidth / 2),
-        y: (window.innerHeight / 2) - (layerHeight / 2)
-      },
-      textConfig: {
+  props: {
+    offset: {
+      type: Number,
+      default: 0
+    },
+    color: {
+      type: String,
+      default: 'white'
+    }
+  },
+  computed: {
+    layerConfig() {
+      return {
+        x: (window.innerWidth / 2) - (layerWidth / 2) + this.offset,
+        y: (window.innerHeight / 2) - (layerHeight / 2),
+        // globalCompositeOperation: 'lighter'
+      }
+      // opacity: 1
+    },
+    textConfig() {
+      return {
+        x: (window.innerWidth / 2) - (layerWidth / 2) + this.offset,
+        y: (window.innerHeight / 2) - (layerHeight / 2),
         text: textContent,
         width: layerWidth,
         wrap: 'word',
-        align: 'left'
+        align: 'left',
+        fill: this.color,
+        globalCompositeOperation: 'lighter',
+        fontSize: 16
       }
-    };
+    }
   }
 };
 </script>
-
-<style scoped>
-/* header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-} */
-</style>

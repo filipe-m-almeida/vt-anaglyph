@@ -12,14 +12,12 @@ import Text from './components/Text.vue'
   </header>
 
   <main>
-    <!-- <div>lalaal</div> -->
-    <!-- <v-stage :config="configKonva">
-      <v-layer :config="layerConfig">
-        <v-text :config="textConfig"/>
+    <v-stage :config="configKonva">
+      <v-layer>
+        <Text :offset="offset" :color="'rgb(255,0,0)'"/>
+        <Text :offset="-offset" :color="'rgb(0, 0, 255)'"/>
       </v-layer>
-    </v-stage>   -->
-    <!-- <TheWelcome /> -->
-    <Text/>
+    </v-stage>
   </main>
 </template>
 
@@ -36,22 +34,69 @@ export default {
         width: window.innerWidth,
         height: window.innerHeight
       },
-      layerConfig: {
-        x: (window.innerWidth / 2) - (layerWidth / 2),
-        y: (window.innerHeight / 2) - (layerHeight / 2)
-      },
-      textConfig: {
-        text: textContent,
-        width: layerWidth,
-        wrap: 'word',
-        align: 'center'
-      }
+      offset: 0
     };
-  }
+  },
+  methods: {
+    createKeydownHandler() {
+          return (e) => {
+            const map = {
+              'd': () => this.adjustOffset(1),
+              'a': () => this.adjustOffset(-1),
+              // 'w': () => this.adjustStrokeWidth(1),
+              // 's': () => this.adjustStrokeWidth(-1),
+              // 'ArrowLeft': () => this.moveGroups(-10, 0),
+              // 'ArrowRight': () => this.moveGroups(10, 0),
+              // 'ArrowUp': () => this.moveGroups(0, -10),
+              // 'ArrowDown': () => this.moveGroups(0, 10),
+              // '2': () => this.adjustSaturation(10),
+              // '1': () => this.adjustSaturation(-10),
+              // 'Escape': () => this.endDrag(),
+              // 'm': () => this.debugVisible = !this.debugVisible,
+              ' ': () => this.invertOffset(),
+              // '?': () => this.keyHelpVisible = !this.keyHelpVisible,
+              // '/': () => {
+              //   // TODO: Turn this into a property.
+              //   this.$refs.commandPrompt.commandPromptVisible = true;
+              //   this.$nextTick(() => {
+              //     if (this.$refs.commandPrompt.$refs.commandInput) {
+              //       this.$refs.commandPrompt.$refs.commandInput.focus();
+              //     }
+              //   });
+              //   e.preventDefault();
+              // },
+            };
+          const action = map[e.key];
+          if (action) {
+            action();
+          }
+        }
+      },
+      adjustOffset(increment : number) {
+        console.log(this.offset);
+        this.offset += (increment * 2) * 2;
+      },
+      invertOffset() {
+        this.offset = -this.offset;
+      },
+    },
+    created() {
+      this.keydownHandler = this.createKeydownHandler();
+      window.addEventListener('keydown', this.keydownHandler);
+    },
+    beforeDestroy() {
+      window.removeEventListener('keydown', this.keydownHandler);
+    },
+
 };
 </script>
 
-<style scoped>
+<style>
+body {
+  background-color: black;
+  overflow: hidden;
+  fill: white;
+}
 /* header {
   line-height: 1.5;
 }
